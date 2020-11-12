@@ -70,11 +70,17 @@
     <title>Hello, world!</title>
   </head>
   <body>
-    <h1>Hello, world!</h1>
-
+    <div class="container d-flex">
+      <div id="currentProducts" class="row col-6 col-sm-2 col-md-3 col-lg-6">
+        <!-- <ol id="currentProducts">
+          Products:
+        </ol> -->
+      </div>
+    </div>
     <script>
       let products = [];
       window.onload = async () => {
+        let currentProducts = document.querySelector("#currentProducts");
         try {
           let response = await fetch(
             "https://striveschool-api.herokuapp.com/api/product/",
@@ -88,6 +94,40 @@
           );
           products = await response.json();
           console.log(products);
+
+          /////////////
+          if (products.length > 0) {
+            products.forEach((e) => {
+              let listItem = document.createElement("div");
+              listItem.classList.add("col");
+              /* "list-group-item",
+                "d-flex",
+                "justify-content-between"
+              ; */
+
+              listItem.innerHTML = `
+                                    <div class="card h-100" style="width:18rem">
+                                    <img src="${e.imageUrl}" class="card-img-top" alt="${e.name}" style="max-width:100%">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${e.name}</h5>
+                                        <p class="card-text">€${e.price}</br>
+                                            ${e.brand}<br>${e.description}</p>
+
+                                    </div>
+                                </div>
+                                `;
+
+              /* <span>${e.name}</span>
+              <span>${e.description}</span>
+              <span>${e.brand}</span>
+              <span>€${e.price}</span>
+              <span>${e.imageUrl}</span>; */
+
+              currentProducts.appendChild(listItem);
+            });
+          } else {
+            currentProducts.innerHTML = "<h1>No products available</h1>";
+          }
         } catch (error) {
           //console.log(error);
           alert(error);
